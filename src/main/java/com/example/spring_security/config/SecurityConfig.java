@@ -6,7 +6,6 @@ import org.springframework.security.authentication.DefaultAuthenticationEventPub
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -31,11 +30,15 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
 
-        http
-                .csrf((auth) -> auth.disable());
+//        http
+//                .httpBasic(Customizer.withDefaults());
 
         http
-                .httpBasic(Customizer.withDefaults());
+                .formLogin((auth) -> auth.loginPage("/login")
+                        .loginProcessingUrl("/loginProc")
+                        .permitAll()
+                );
+
 
         http
                 .sessionManagement((auth) -> auth
@@ -45,6 +48,7 @@ public class SecurityConfig {
         http
                 .sessionManagement((auth) -> auth
                         .sessionFixation().changeSessionId());
+
 
         return http.build();
     }
